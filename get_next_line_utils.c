@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-static size_t	ft_strlen(const char *str)
+size_t	ft_strlen(const char *str)
 {
 	size_t	len;
 
@@ -22,7 +21,7 @@ static size_t	ft_strlen(const char *str)
 	return (len);
 }
 
-static char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
 	size_t	i;
 	size_t	j;
@@ -49,29 +48,35 @@ static char	*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 
-static char	*ft_strdup(const char *s)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t	len;
 	size_t	i;
-	char	*dup;
+	size_t	str_len;
+	char	*sub;
 
-	len = 0;
-	while (s[len])
-		len++;
-	dup = malloc(len + 1);
-	if (!dup)
+	if (!s)
+		return (NULL);
+	str_len = 0;
+	while (s[str_len] != 0)
+		str_len++;
+	if (start >= str_len)
+		return (ft_strdup(""));
+	if (len > str_len - start)
+		len = str_len - start;
+	sub = malloc(len + 1);
+	if (!sub)
 		return (NULL);
 	i = 0;
 	while (i < len)
 	{
-		dup[i] = s[i];
+		sub[i] = s[start + i];
 		i++;
 	}
-	dup[i] = '\0';
-	return (dup);
+	sub[i] = '\0';
+	return (sub);
 }
 
-static char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
 	while (*s)
 	{
