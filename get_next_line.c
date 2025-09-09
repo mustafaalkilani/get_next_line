@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/09 19:04:18 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:09:23 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,24 @@
 char *get_next_line(int fd)
 {
     size_t read_bytes;
-    char *line;
+    char *buffer;
 
     if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
 
-    line = malloc(BUFFER_SIZE + 1);
-    if (!line)
+    buffer = malloc(BUFFER_SIZE + 1);
+    if (!buffer)
         return (NULL);
-    while(!ft_strchr(line, '\n'))
+
+    read_bytes = read(fd, buffer, BUFFER_SIZE);
+    if (read_bytes <= 0) 
     {
-        read_bytes = read(fd, line, BUFFER_SIZE);
+        free(buffer);
+        return (NULL);
     }
+
+    buffer[read_bytes] = '\0';
+    return (buffer);
 }
 #include <fcntl.h>
 #include <stdlib.h>
