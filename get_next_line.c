@@ -6,12 +6,12 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/09 19:09:23 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:34:04 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
+#include <stdio.h> 
 
 char *get_next_line(int fd)
 {
@@ -31,13 +31,13 @@ char *get_next_line(int fd)
         free(buffer);
         return (NULL);
     }
-
+    while (ft_strchr(buffer, '\n'))
+        printf("found");
     buffer[read_bytes] = '\0';
     return (buffer);
 }
 #include <fcntl.h>
 #include <stdlib.h>
-#include <stdio.h> 
 int main(void)
 {
     int   fd;
