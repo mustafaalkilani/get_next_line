@@ -13,61 +13,83 @@
 #include "get_next_line.h"
 #include <stdio.h> 
 
+int check_nl(char *buffer)
+{
+    int i;
+
+    i = 0;
+    while(buffer[i])
+    {
+        if (buffer[i] == '\n')
+            return (i);
+        i++;
+    }
+    return (-1);
+}
+
 char *get_next_line(int fd)
 {
-    size_t  read_bytes;
     char *buffer;
+    int read_bytes;
     static char *stash;
-    int i = 0;
-    if (fd < 0 || BUFFER_SIZE <= 0)
-        return (NULL);
+    int nl_index;
+    char    *line;
 
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return NULL;
     buffer = malloc(BUFFER_SIZE + 1);
     if (!buffer)
         return (NULL);
-
+    if (!stash)
+        stash = ft_strdup("");
     read_bytes = 1;
-    while (!ft_strchr(stash, '\n') && read_bytes > 0)
+    while (read_bytes > 0 && check_nl(stash) == -1)
     {
         read_bytes = read(fd, buffer, BUFFER_SIZE);
-        if (read_bytes < 0)
-        {
-            free(buffer);
-            free(stash);
-        }
-        i++;
-    buffer[read_bytes] = '\0';
-    stash = ft_strjoin(stash, buffer);
-    }
-    if (ft_strchr(stash, '\n'))
-    {
-        buffer = ft_substr(stash, 0, i);
-        stash = ft_substr(stash, i, ft_strlen(stash));
-        return buffer
+        if (read_bytes <= 0)
+            break;
+        buffer[read_bytes] = '\0';
+        stash = ft_strjoin(stash, buffer);
     }
     free(buffer);
-    return (stash);
-}
-#include <fcntl.h>
-#include <stdlib.h>
-int main(void)
-{
-    int   fd;
-    char *line;
 
-    fd = open("test.txt", O_RDONLY);
-    if (fd < 0)
+    if (!stash || *stash == '\0')
+        return NULL;
+
+    nl_index = check_nl(stash);
+    if (nl_index >= 0)
     {
-        perror("Error opening file");
-        return (1);
+        line = ft_substr(stash, 0, nl_index + 1);
+        stash = ft_substr(stash, nl_index + 1, ft_strlen(stash) - nl_index - 1);
     }
-
-    while ((line = get_next_line(fd)) != NULL)
+    else
     {
-        printf("%s", line);
-        free(line);
+        line = ft_strdup(stash);
+        free(stash);
+        stash = NULL;
     }
-
-    close(fd);
-    return (0);
+    return line;
 }
+// #include <fcntl.h>
+// #include <stdlib.h>
+// int main(void)
+// {
+//     int   fd;
+//     char *line;
+
+//     fd = open("test.txt", O_RDONLY);
+//     if (fd < 0)
+//     {
+//         perror("Error opening file");
+//         return (1);
+//     }
+
+//     while ((line = get_next_line(fd)) != NULL)
+//     {
+//         printf("%s", line);
+//         free(line);
+//     }
+
+//     close(fd);
+//     return (0);
+// }
