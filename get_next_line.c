@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/11 19:14:35 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/11 19:18:43 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,15 @@ char	*get_next_line(int fd)
 	while (read_bytes > 0 && check_nl(stash) == -1)
 	{
 		read_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (read_bytes < 0) 
-        {
-            free(buffer);
-            free(stash);
-            stash = NULL;
-            return NULL;
-        }
-        if (read_bytes == 0)
-            break;
+		if (read_bytes < 0)
+		{
+			free(buffer);
+			free(stash);
+			stash = NULL;
+			return (NULL);
+		}
+		if (read_bytes == 0)
+			break ;
 		buffer[read_bytes] = '\0';
 		tmp = ft_strjoin(stash, buffer);
 		replace_stash(&stash, tmp);
@@ -93,7 +93,8 @@ char	*get_next_line(int fd)
 
 /* #include <fcntl.h>
 #include <stdlib.h>
-int main(void)
+
+int	main(void)
 {
     int   fd;
     char *line;
