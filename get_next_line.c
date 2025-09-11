@@ -6,19 +6,25 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/09 19:34:04 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/11 16:12:16 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h> 
 
+static void replace_stash(char **stash, char *new_stash)
+{
+    free(*stash);
+    *stash = new_stash;
+}
+
 int check_nl(char *buffer)
 {
-    int i;
-
-    i = 0;
-    while(buffer[i])
+    int i = 0;
+    if (!buffer)
+        return (-1);
+    while (buffer[i])
     {
         if (buffer[i] == '\n')
             return (i);
@@ -29,14 +35,15 @@ int check_nl(char *buffer)
 
 char *get_next_line(int fd)
 {
-    char *buffer;
-    int read_bytes;
+    char        *buffer;
+    int         read_bytes;
     static char *stash;
-    int nl_index;
-    char    *line;
+    int         nl_index;
+    char        *line;
+    char        *tmp;
 
     if (fd < 0 || BUFFER_SIZE <= 0)
-        return NULL;
+        return (NULL);
     buffer = malloc(BUFFER_SIZE + 1);
     if (!buffer)
         return (NULL);
@@ -47,20 +54,25 @@ char *get_next_line(int fd)
     {
         read_bytes = read(fd, buffer, BUFFER_SIZE);
         if (read_bytes <= 0)
-            break;
+            break ;
         buffer[read_bytes] = '\0';
-        stash = ft_strjoin(stash, buffer);
+        tmp = ft_strjoin(stash, buffer);
+        replace_stash(&stash, tmp);
     }
     free(buffer);
 
     if (!stash || *stash == '\0')
-        return NULL;
-
+    {
+        free(stash);
+        stash = NULL;
+        return (NULL);
+    }
     nl_index = check_nl(stash);
     if (nl_index >= 0)
     {
         line = ft_substr(stash, 0, nl_index + 1);
-        stash = ft_substr(stash, nl_index + 1, ft_strlen(stash) - nl_index - 1);
+        tmp = ft_substr(stash, nl_index + 1, ft_strlen(stash) - nl_index - 1);
+        replace_stash(&stash, tmp);
     }
     else
     {
@@ -68,8 +80,9 @@ char *get_next_line(int fd)
         free(stash);
         stash = NULL;
     }
-    return line;
+    return (line);
 }
+
 // #include <fcntl.h>
 // #include <stdlib.h>
 // int main(void)
@@ -77,7 +90,7 @@ char *get_next_line(int fd)
 //     int   fd;
 //     char *line;
 
-//     fd = open("test.txt", O_RDONLY);
+//    fd = open("test.txt", O_RDONLY);
 //     if (fd < 0)
 //     {
 //         perror("Error opening file");
@@ -90,6 +103,6 @@ char *get_next_line(int fd)
 //         free(line);
 //     }
 
-//     close(fd);
+//    close(fd);
 //     return (0);
 // }
