@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:51:10 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/11 19:17:42 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/15 15:50:25 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,4 +110,20 @@ char	*ft_strchr(const char *s, int c)
 	if ((char)c == '\0')
 		return ((char *)s);
 	return (NULL);
+}
+
+int find_newline(char *str)
+{
+    int i;
+
+    if (!str)
+        return (-1);
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] == '\n')
+            return (i);
+        i++;
+    }
+    return (-1);
 }

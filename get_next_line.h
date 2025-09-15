@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 18:25:01 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/11 18:03:07 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/15 15:47:51 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-char	*get_next_line(int fd);
-char	*ft_strchr(const char *s, int c);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strjoin(char const *s1, char const *s2);
-size_t	ft_strlen(const char *str);
-char	*ft_strdup(const char *s);
+char    *get_next_line(int fd);
+char    *ft_substr(char const *s, unsigned int start, size_t len);
+char    *ft_strjoin(char const *s1, char const *s2);
+size_t  ft_strlen(const char *str);
+char    *ft_strdup(const char *s);
+int     find_newline(char *str);
 #endif

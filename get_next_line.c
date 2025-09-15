@@ -6,90 +6,111 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/11 19:18:43 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/15 15:47:31 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
-static void	replace_stash(char **stash, char *new_stash)
+static void cleanup_and_return(char **stash, char *buffer)
 {
-	free(*stash);
-	*stash = new_stash;
+    if (buffer)
+        free(buffer);
+    if (stash && *stash)
+    {
+        free(*stash);
+        *stash = NULL;
+    }
 }
 
-int	check_nl(char *buffer)
+static int read_chunk(int fd, char *buffer, char **stash)
 {
-	int	i;
+    char    *tmp;
+    int     bytes;
 
-	i = 0;
-	if (!buffer)
-		return (-1);
-	while (buffer[i])
-	{
-		if (buffer[i] == '\n')
-			return (i);
-		i++;
-	}
-	return (-1);
+    bytes = read(fd, buffer, BUFFER_SIZE);
+    if (bytes <= 0)
+        return (bytes);
+    buffer[bytes] = '\0';
+    tmp = ft_strjoin(*stash, buffer);
+    if (!tmp)
+        return (-1);
+    free(*stash);
+    *stash = tmp;
+    return (bytes);
 }
 
-char	*get_next_line(int fd)
+static char *read_and_stash(int fd, char **stash)
 {
-	char		*buffer;
-	int			read_bytes;
-	static char	*stash;
-	int			nl_index;
-	char		*line;
-	char		*tmp;
+    char    *buffer;
+    int     result;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return (NULL);
-	if (!stash)
-		stash = ft_strdup("");
-	read_bytes = 1;
-	while (read_bytes > 0 && check_nl(stash) == -1)
-	{
-		read_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (read_bytes < 0)
-		{
-			free(buffer);
-			free(stash);
-			stash = NULL;
-			return (NULL);
-		}
-		if (read_bytes == 0)
-			break ;
-		buffer[read_bytes] = '\0';
-		tmp = ft_strjoin(stash, buffer);
-		replace_stash(&stash, tmp);
-	}
-	free(buffer);
-	if (!stash || *stash == '\0')
-	{
-		free(stash);
-		stash = NULL;
-		return (NULL);
-	}
-	nl_index = check_nl(stash);
-	if (nl_index >= 0)
-	{
-		line = ft_substr(stash, 0, nl_index + 1);
-		tmp = ft_substr(stash, nl_index + 1, ft_strlen(stash) - nl_index - 1);
-		replace_stash(&stash, tmp);
-	}
-	else
-	{
-		line = ft_strdup(stash);
-		free(stash);
-		stash = NULL;
-	}
-	return (line);
+    buffer = malloc(BUFFER_SIZE + 1);
+    if (!buffer)
+        return (NULL);
+    result = 1;
+    while (result > 0 && find_newline(*stash) == -1)
+    {
+        result = read_chunk(fd, buffer, stash);
+        if (result < 0)
+        {
+            cleanup_and_return(stash, buffer);
+            return (NULL);
+        }
+    }
+    free(buffer);
+    return (*stash);
 }
+
+static char *extract_line(char **stash)
+{
+    char    *line;
+    char    *tmp;
+    int     nl_pos;
+
+    if (!*stash || **stash == '\0')
+        return (NULL);
+    nl_pos = find_newline(*stash);
+    if (nl_pos >= 0)
+    {
+        line = ft_substr(*stash, 0, nl_pos + 1);
+        tmp = ft_substr(*stash, nl_pos + 1, ft_strlen(*stash) - nl_pos - 1);
+        free(*stash);
+        *stash = tmp;
+    }
+    else
+    {
+        line = ft_strdup(*stash);
+        free(*stash);
+        *stash = NULL;
+    }
+    return (line);
+}
+
+char    *get_next_line(int fd)
+{
+    static char *stash;
+    char        *line;
+
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
+    if (!stash)
+    {
+        stash = ft_strdup("");
+        if (!stash)
+            return (NULL);
+    }
+    if (!read_and_stash(fd, &stash))
+        return (NULL);
+    line = extract_line(&stash);
+    if (!line && stash)
+    {
+        free(stash);
+        stash = NULL;
+    }
+    return (line);
+}
+
 
 /* #include <fcntl.h>
 #include <stdlib.h>
