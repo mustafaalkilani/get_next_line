@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/15 15:47:31 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/15 19:10:54 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,30 +112,15 @@ char    *get_next_line(int fd)
 }
 
 
-/* #include <fcntl.h>
-#include <stdlib.h>
-
-int	main(void)
-{
-    int   fd;
-    char *line;
-
-   fd = open("test.txt", O_RDONLY);
-    if (fd < 0)
-    {
-        perror("Error opening file");
-        return (1);
-    }
-
-        line = get_next_line(fd);
-        printf("%s", line);
-        free(line);
-    // while ((line = get_next_line(fd)) != NULL)
-    // {
-    //     printf("%s", line);
-    //     free(line);
-    // }
-
-   close(fd);
-    return (0);
-} */
+// #include <fcntl.h>
+// #include <stdlib.h>
+// #include <stdio.h>
+// int main(void)
+// {
+//     int fd = open("file.txt", O_RDONLY);
+//     char *line = get_next_line(fd);
+//     if (!line)
+//         printf("NULL as expected\n");
+//     else
+//         printf("Got: %s\n", line);
+// }
