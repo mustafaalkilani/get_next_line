@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/21 18:09:38 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/21 18:28:08 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char	*get_next_line(int fd)
 	static char	*stash[4096];
 	char		*line;
 
-	if (fd < 0 || read(fd,NULL,0) < 0 || BUFFER_SIZE <= 0 || fd > 4096)
+	if (fd < 0 || read(fd, NULL, 0) < 0 || BUFFER_SIZE <= 0 || fd > 4096)
 	{
 		free(stash[fd]);
 		stash[fd] = NULL;
