@@ -6,13 +6,13 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/21 18:07:33 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/21 18:09:38 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*extract_line_from_stash(char **stash)
+char	*extract_line_from_stash(char **stash)
 {
 	char	*line;
 	char	*new_stash;
@@ -40,7 +40,7 @@ static char	*extract_line_from_stash(char **stash)
 	return (line);
 }
 
-static char	*read_to_stash(int fd, char *stash)
+char	*read_to_stash(int fd, char *stash)
 {
 	char	*buffer;
 	char	*temp;
