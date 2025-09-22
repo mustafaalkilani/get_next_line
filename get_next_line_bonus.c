@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/09 15:59:40 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/21 18:27:47 by malkilan         ###   ########.fr       */
+/*   Created: 2025/09/22 17:51:31 by malkilan          #+#    #+#             */
+/*   Updated: 2025/09/22 17:51:32 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
 char	*extract_line_from_stash(char **stash)
 {
@@ -72,7 +72,9 @@ char	*get_next_line(int fd)
 	static char	*stash[4096];
 	char		*line;
 
-	if (fd < 0 || read(fd, NULL, 0) < 0 || BUFFER_SIZE <= 0 || fd > 4096)
+	if (fd < 0 || fd >= 4096)
+		return (NULL);
+	if (read(fd, NULL, 0) < 0 || BUFFER_SIZE <= 0)
 	{
 		free(stash[fd]);
 		stash[fd] = NULL;
@@ -89,4 +91,18 @@ char	*get_next_line(int fd)
 	}
 	line = extract_line_from_stash(&stash[fd]);
 	return (line);
+}
+#include <fcntl.h>
+#include <stdio.h>
+int	main(void)
+{
+	int fd = open("test.txt", O_RDONLY);
+	char *line = get_next_line(fd);
+	while (line)
+	{
+		printf("%s", line);
+		free(line);
+		line = get_next_line(fd);
+	}
+	close(fd);
 }
