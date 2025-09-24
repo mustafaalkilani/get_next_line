@@ -6,32 +6,51 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:51:31 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/22 17:51:32 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:03:05 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+size_t	ft_strlen(const char *str)
+{
+	size_t	len;
+
+	len = 0;
+	while (str[len] != '\0')
+		len++;
+	return (len);
+}
+
+void	*free_and_return(char **stash)
+{
+	if (*stash)
+	{
+		free(*stash);
+		*stash = NULL;
+	}
+	return (NULL);
+}
+
 char	*extract_line_from_stash(char **stash)
 {
 	char	*line;
-	char	*new_stash;
 	char	*newline_ptr;
-	int		line_len;
+	char	*new_stash;
+	size_t	line_len;
 
+	if (!stash || !*stash || **stash == '\0')
+		return (NULL);
 	newline_ptr = ft_strchr(*stash, '\n');
 	if (newline_ptr)
 	{
-		line_len = newline_ptr - *stash + 1;
+		line_len = (newline_ptr - *stash) + 1;
 		line = ft_substr(*stash, 0, line_len);
-		new_stash = ft_substr(*stash, line_len, ft_strlen(*stash) - line_len);
+		new_stash = ft_strdup(*stash + line_len);
 		free(*stash);
 		*stash = new_stash;
-		if (**stash == '\0')
-		{
-			free(*stash);
-			*stash = NULL;
-		}
+		if (!*stash)
+			free(new_stash);
 		return (line);
 	}
 	line = ft_strdup(*stash);
@@ -48,7 +67,7 @@ char	*read_to_stash(int fd, char *stash)
 
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
-		return (NULL);
+		return (free_and_return(&stash));
 	bytes_read = 1;
 	while (bytes_read > 0 && !ft_strchr(stash, '\n'))
 	{
@@ -56,6 +75,7 @@ char	*read_to_stash(int fd, char *stash)
 		if (bytes_read < 0)
 		{
 			free(buffer);
+			free(stash);
 			return (NULL);
 		}
 		buffer[bytes_read] = '\0';
@@ -75,34 +95,15 @@ char	*get_next_line(int fd)
 	if (fd < 0 || fd >= 4096)
 		return (NULL);
 	if (read(fd, NULL, 0) < 0 || BUFFER_SIZE <= 0)
-	{
-		free(stash[fd]);
-		stash[fd] = NULL;
-		return (NULL);
-	}
-	if (!stash[fd])
-		stash[fd] = ft_strdup("");
+		return (free_and_return(&stash[fd]));
 	stash[fd] = read_to_stash(fd, stash[fd]);
 	if (!stash[fd] || !*stash[fd])
+		return (free_and_return(&stash[fd]));
+	line = extract_line_from_stash(&stash[fd]);
+	if (!line)
 	{
 		free(stash[fd]);
 		stash[fd] = NULL;
-		return (NULL);
 	}
-	line = extract_line_from_stash(&stash[fd]);
 	return (line);
-}
-#include <fcntl.h>
-#include <stdio.h>
-int	main(void)
-{
-	int fd = open("test.txt", O_RDONLY);
-	char *line = get_next_line(fd);
-	while (line)
-	{
-		printf("%s", line);
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
 }

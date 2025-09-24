@@ -6,48 +6,51 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:51:10 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/21 14:19:36 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:54:52 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *str)
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	size_t	len;
+	size_t	i;
+	size_t	src_len;
 
-	len = 0;
-	while (str[len] != '\0')
-		len++;
-	return (len);
+	src_len = 0;
+	i = 0;
+	while (src[src_len] != 0)
+		src_len++;
+	if (size == 0)
+		return (src_len);
+	while (src[i] != 0 && i < size - 1)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (src_len);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	size_t	len1;
 	size_t	len2;
-	size_t	i;
 	char	*str;
 
-	if (!s1 || !s2)
+	if (!s1 && !s2)
 		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(s1));
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
 	str = malloc(len1 + len2 + 1);
 	if (!str)
 		return (NULL);
-	i = 0;
-	while (i < len1)
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	while (i < len1 + len2)
-	{
-		str[i] = s2[i - len1];
-		i++;
-	}
-	str[i] = '\0';
+	ft_strlcpy(str, s1, len1 + 1);
+	ft_strlcpy(str + len1, s2, len1 + len2 + 1);
 	return (str);
 }
 
@@ -101,6 +104,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 char	*ft_strchr(const char *s, int c)
 {
+	if (!s)
+		return (NULL);
 	while (*s)
 	{
 		if (*s == (char)c)

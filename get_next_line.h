@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/07 18:25:01 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/11 19:29:40 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:17:56 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 100
+#  define BUFFER_SIZE 2
 # endif
 
 # include <stdlib.h>
