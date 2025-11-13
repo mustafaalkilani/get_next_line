@@ -6,7 +6,7 @@
 /*   By: malkilan <malkilan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:51:31 by malkilan          #+#    #+#             */
-/*   Updated: 2025/09/24 16:03:05 by malkilan         ###   ########.fr       */
+/*   Updated: 2025/11/13 12:56:08 by malkilan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || fd >= 4096)
 		return (NULL);
-	if (read(fd, NULL, 0) < 0 || BUFFER_SIZE <= 0)
+	if (BUFFER_SIZE <= 0)
 		return (free_and_return(&stash[fd]));
 	stash[fd] = read_to_stash(fd, stash[fd]);
 	if (!stash[fd] || !*stash[fd])
